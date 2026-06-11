@@ -1,25 +1,26 @@
-import { useScrollReveal } from "./hooks/useScrollReveal";
+import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import Catalog from "./components/Catalog";
-import About from "./components/About";
-import Testimonials from "./components/Testimonials";
-import InstagramFeed from "./components/InstagramFeed";
 import Footer from "./components/Footer";
 import WhatsAppButton from "./components/WhatsAppButton";
+import ScrollToTop from "./components/ScrollToTop";
+import Home from "./pages/Home";
+import CatalogoPage from "./pages/CatalogoPage";
+import MarcaPage from "./pages/MarcaPage";
+import ContactoPage from "./pages/ContactoPage";
 
 function App() {
-  useScrollReveal();
-
   return (
     <>
+      <ScrollToTop />
       <Navbar />
       <main>
-        <Hero />
-        <Catalog />
-        <About />
-        <Testimonials />
-        <InstagramFeed />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/catalogo" element={<CatalogoPage />} />
+          <Route path="/marca" element={<MarcaPage />} />
+          <Route path="/contacto" element={<ContactoPage />} />
+          <Route path="*" element={<Home />} />
+        </Routes>
       </main>
       <Footer />
       <WhatsAppButton />

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { BRAND, waLink } from "../data/site";
 
 function IgGlyph() {
@@ -43,10 +44,10 @@ export default function Footer() {
           <div>
             <h4>Explora</h4>
             <ul className="footer__list">
-              <li><a href="#catalogo">Catálogo</a></li>
-              <li><a href="#marca">La marca</a></li>
-              <li><a href="#testimonios">Testimonios</a></li>
-              <li><a href="#instagram">Instagram</a></li>
+              <li><Link to="/">Inicio</Link></li>
+              <li><Link to="/catalogo">Catálogo</Link></li>
+              <li><Link to="/marca">La marca</Link></li>
+              <li><Link to="/contacto">Contacto</Link></li>
             </ul>
           </div>
 
