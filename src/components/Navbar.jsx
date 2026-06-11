@@ -1,24 +1,39 @@
 import { useEffect, useState } from "react";
+import { NavLink, Link, useLocation } from "react-router-dom";
 import { BRAND } from "../data/site";
 
 const LINKS = [
-  { href: "#catalogo", label: "Catálogo" },
-  { href: "#marca", label: "La marca" },
-  { href: "#testimonios", label: "Testimonios" },
-  { href: "#instagram", label: "Instagram" },
-  { href: "#contacto", label: "Contacto" },
+  { to: "/catalogo", label: "Catálogo" },
+  { to: "/marca", label: "La marca" },
+  { to: "/contacto", label: "Contacto" },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { pathname } = useLocation();
+  const isHome = pathname === "/";
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    // En el inicio: transparente sobre la animación, con fondo al pasarla.
+    // En las demás páginas: fondo desde el principio.
+    const onScroll = () => {
+      if (!isHome) {
+        setScrolled(true);
+        return;
+      }
+      const hero = document.getElementById("top");
+      if (hero) {
+        // Gana fondo cuando la animación a pantalla completa termina de pasar.
+        setScrolled(hero.getBoundingClientRect().bottom <= 80);
+      } else {
+        setScrolled(window.scrollY > 40);
+      }
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [isHome]);
 
   useEffect(() => {
     document.body.classList.toggle("no-scroll", open);
@@ -28,16 +43,21 @@ export default function Navbar() {
   return (
     <header className={`nav ${scrolled ? "is-scrolled" : ""}`}>
       <div className="container nav__inner">
-        <a href="#top" className="nav__brand" aria-label={BRAND.name}>
+        <Link to="/" className="nav__brand" aria-label={BRAND.name} onClick={() => setOpen(false)}>
           En Tus Manos Estoy
           <span>Camisetas con propósito</span>
-        </a>
+        </Link>
 
         <nav className={`nav__links ${open ? "is-open" : ""}`}>
           {LINKS.map((l) => (
-            <a key={l.href} href={l.href} onClick={() => setOpen(false)}>
+            <NavLink
+              key={l.to}
+              to={l.to}
+              className={({ isActive }) => (isActive ? "is-current" : "")}
+              onClick={() => setOpen(false)}
+            >
               {l.label}
-            </a>
+            </NavLink>
           ))}
         </nav>
 

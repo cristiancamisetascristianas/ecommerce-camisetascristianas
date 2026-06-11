@@ -229,6 +229,7 @@ h4 {
   position: fixed;
   inset: 0 0 auto 0;
   z-index: 60;
+  background: transparent;
   transition: background 0.5s var(--ease), box-shadow 0.5s var(--ease),
     backdrop-filter 0.5s var(--ease);
 }
@@ -243,7 +244,7 @@ h4 {
   font-size: 1.35rem;
   font-weight: 600;
   letter-spacing: 0.02em;
-  color: var(--c-crema);
+  color: var(--c-tinta);
   transition: color 0.5s var(--ease);
   line-height: 1.05;
 }
@@ -254,7 +255,8 @@ h4 {
   font-weight: 500;
   letter-spacing: 0.34em;
   text-transform: uppercase;
-  opacity: 0.75;
+  color: var(--c-cafe);
+  opacity: 0.9;
   margin-top: 2px;
 }
 .nav__links {
@@ -266,7 +268,7 @@ h4 {
   font-size: 0.82rem;
   font-weight: 500;
   letter-spacing: 0.04em;
-  color: var(--c-crema);
+  color: var(--c-tinta);
   position: relative;
   transition: color 0.5s var(--ease);
 }
@@ -277,24 +279,24 @@ h4 {
   bottom: -6px;
   width: 100%;
   height: 1px;
-  background: currentColor;
+  background: var(--c-cafe);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.4s var(--ease);
 }
-.nav__links a:hover::after {
+.nav__links a:hover::after,
+.nav__links a.is-current::after {
   transform: scaleX(1);
+}
+.nav__links a.is-current {
+  color: var(--c-cafe);
 }
 
 /* estado al hacer scroll */
 .nav.is-scrolled {
-  background: rgba(250, 247, 242, 0.86);
-  backdrop-filter: blur(14px);
+  background: rgba(250, 247, 242, 0.92);
+  backdrop-filter: blur(16px);
   box-shadow: var(--sombra-sm);
-}
-.nav.is-scrolled .nav__brand,
-.nav.is-scrolled .nav__links a {
-  color: var(--c-tinta);
 }
 
 .nav__toggle {
@@ -308,7 +310,7 @@ h4 {
   left: 0;
   width: 100%;
   height: 2px;
-  background: var(--c-crema);
+  background: var(--c-tinta);
   transition: transform 0.4s var(--ease), opacity 0.3s var(--ease),
     background 0.5s var(--ease);
 }
@@ -1135,6 +1137,359 @@ h4 {
 @media (max-width: 600px) {
   .wa-float__tip {
     display: none;
+  }
+}
+
+/* ============================================================
+   HERO ANIMADO POR SCROLL (frames del hoodie)
+   ============================================================ */
+.fhero {
+  position: relative;
+  height: 600vh;            /* longitud del scroll de la animación */
+  background: #d9d9d9;      /* gris similar al fondo de los frames */
+}
+.fhero__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+.fhero__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.fhero.is-static .fhero__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Capas de texto sobre la animación */
+.fhero__layer {
+  position: absolute;
+  z-index: 3;
+  max-width: var(--max);
+  width: 100%;
+  padding-inline: clamp(1.25rem, 5vw, 3.5rem);
+  margin-inline: auto;
+  left: 0;
+  right: 0;
+  transition: opacity 0.5s var(--ease);
+  will-change: opacity;
+}
+.fhero__layer--right {
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: right;
+}
+.fhero__layer--right > * {
+  margin-left: auto;
+}
+.fhero__layer--left {
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: left;
+}
+.fhero__layer--left .fhero__sub {
+  margin-right: auto;
+  margin-left: 0;
+}
+.fhero__layer--left .fhero__cta {
+  justify-content: flex-start;
+}
+.fhero__layer--top {
+  top: clamp(7rem, 16vh, 11rem);
+  text-align: center;
+}
+.fhero__layer h1,
+.fhero__layer h2 {
+  font-size: clamp(2.4rem, 6.5vw, 5rem);
+  color: var(--c-tinta);
+  text-shadow: 0 2px 30px rgba(217, 217, 217, 0.9);
+  margin: 0.4rem 0 1rem;
+}
+.fhero__layer h1 em,
+.fhero__layer h2 em {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--c-cafe);
+}
+.fhero__sub {
+  font-size: clamp(1rem, 2.2vw, 1.35rem);
+  color: var(--c-tinta-2);
+  font-weight: 300;
+  max-width: 32ch;
+}
+.fhero__layer--right .fhero__sub {
+  margin-left: auto;
+}
+.fhero__cta {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.fhero__layer--right .fhero__cta {
+  justify-content: flex-end;
+}
+.fhero__hint {
+  display: inline-block;
+  margin-top: 1.8rem;
+  font-size: 0.66rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--c-cafe);
+  animation: hintPulse 2.2s var(--ease) infinite;
+}
+@keyframes hintPulse {
+  0%, 100% { opacity: 0.35; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(4px); }
+}
+.fhero__progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(31, 26, 22, 0.12);
+  z-index: 4;
+}
+.fhero__progress > div {
+  height: 100%;
+  width: 0%;
+  background: var(--c-cafe);
+  transition: width 0.08s linear;
+}
+
+@media (max-width: 720px) {
+  .fhero__layer--right,
+  .fhero__layer--left,
+  .fhero__layer--top {
+    top: auto;
+    bottom: clamp(3rem, 12vh, 6rem);
+    transform: none;
+    text-align: center;
+  }
+  .fhero__layer--right > *,
+  .fhero__layer--right .fhero__sub,
+  .fhero__layer--left .fhero__sub {
+    margin-inline: auto;
+  }
+  .fhero__layer--right .fhero__cta,
+  .fhero__layer--left .fhero__cta {
+    justify-content: center;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fhero {
+    height: 100vh;
+  }
+}
+
+/* ============================================================
+   SECCIONES CON FONDO DE HORMIGÓN
+   ============================================================ */
+.section--bg {
+  position: relative;
+  background-image: linear-gradient(
+      rgba(250, 247, 242, 0.86),
+      rgba(250, 247, 242, 0.9)
+    ),
+    url("./assets/background.png");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+@media (max-width: 820px) {
+  .section--bg {
+    background-attachment: scroll;
+  }
+}
+
+/* Cabecera de cada página interior */
+.page-hero {
+  padding-top: clamp(8rem, 16vh, 11rem);
+  padding-bottom: clamp(3rem, 7vw, 5rem);
+  text-align: center;
+}
+.page-hero h1 {
+  font-size: clamp(2.6rem, 7vw, 5rem);
+  margin: 0.7rem 0 1rem;
+}
+.page-hero p {
+  max-width: 56ch;
+  margin: 0 auto;
+  color: var(--c-gris);
+  font-size: 1.08rem;
+}
+
+/* Destacados en home */
+.featured__cta {
+  text-align: center;
+  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+}
+
+/* Franja "La marca" en home */
+.marca-strip__inner {
+  max-width: 680px;
+  text-align: center;
+  margin-inline: auto;
+}
+.marca-strip__inner h2 {
+  font-size: clamp(2.2rem, 5.5vw, 3.6rem);
+  margin: 0.8rem 0 1.2rem;
+}
+.marca-strip__inner h2 em {
+  font-style: italic;
+  color: var(--c-cafe);
+}
+.marca-strip__inner > p {
+  color: var(--c-gris);
+  font-size: 1.08rem;
+}
+.marca-strip__cta {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* CTA final home */
+.home-cta__inner {
+  text-align: center;
+  max-width: 640px;
+  margin-inline: auto;
+}
+.home-cta__inner h2 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+}
+.home-cta__inner p {
+  color: var(--c-gris);
+  margin: 1rem 0 2rem;
+}
+
+/* Valores (página marca) */
+.values__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: clamp(1.2rem, 3vw, 2rem);
+}
+.value-card {
+  background: var(--c-blanco);
+  border-radius: 6px;
+  padding: clamp(1.6rem, 3vw, 2.2rem);
+  box-shadow: var(--sombra-sm);
+  border-top: 3px solid var(--c-cafe);
+  transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease);
+}
+.value-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--sombra-md);
+}
+.value-card h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.6rem;
+}
+.value-card p {
+  color: var(--c-gris);
+  font-size: 0.98rem;
+}
+
+/* ============================================================
+   PÁGINA CONTACTO
+   ============================================================ */
+.contacto__grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: clamp(2.5rem, 6vw, 5rem);
+  align-items: start;
+}
+.contacto__info h2,
+.contacto__form h2 {
+  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  margin-bottom: 1.6rem;
+}
+.contacto__list {
+  display: grid;
+  gap: 1.3rem;
+  margin-bottom: 2rem;
+}
+.contacto__list li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.contacto__label {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--c-cafe);
+  font-weight: 600;
+}
+.contacto__list a,
+.contacto__list span:not(.contacto__label) {
+  font-size: 1.05rem;
+  color: var(--c-tinta);
+}
+.contacto__list a:hover {
+  color: var(--c-cafe);
+}
+.contacto__form {
+  background: var(--c-blanco);
+  border-radius: 8px;
+  padding: clamp(1.6rem, 4vw, 2.6rem);
+  box-shadow: var(--sombra-md);
+}
+.field {
+  display: block;
+  margin-bottom: 1.2rem;
+}
+.field span {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--c-gris);
+  margin-bottom: 0.5rem;
+}
+.field input,
+.field textarea {
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.98rem;
+  color: var(--c-tinta);
+  background: var(--c-crema);
+  border: 1px solid var(--c-linea);
+  border-radius: var(--radio);
+  padding: 0.85rem 1rem;
+  transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  resize: vertical;
+}
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--c-cafe);
+  box-shadow: 0 0 0 3px rgba(111, 84, 64, 0.12);
+}
+.contacto__note {
+  margin-top: 0.9rem;
+  font-size: 0.8rem;
+  color: var(--c-gris);
+  text-align: center;
+}
+@media (max-width: 760px) {
+  .contacto__grid {
+    grid-template-columns: 1fr;
   }
 }
 

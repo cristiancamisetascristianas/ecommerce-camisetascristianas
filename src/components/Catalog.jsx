@@ -3,7 +3,7 @@ import { PRODUCTS, CATEGORIES } from "../data/products";
 import ProductCard from "./ProductCard";
 import ProductModal from "./ProductModal";
 
-export default function Catalog() {
+export default function Catalog({ hideHead = false }) {
   const [filter, setFilter] = useState("todos");
   const [active, setActive] = useState(null);
 
@@ -19,14 +19,16 @@ export default function Catalog() {
     <section className="section catalog" id="catalogo">
       <div className="container">
         <div className="catalog__head">
-          <div className="section-head reveal" style={{ marginBottom: 0 }}>
-            <p className="eyebrow">Nuestra colección</p>
-            <h2>El catálogo</h2>
-            <p>
-              Cada diseño nace de un versículo y se confecciona con telas que
-              duran. Elige el tuyo y pídelo directo por WhatsApp.
-            </p>
-          </div>
+          {!hideHead && (
+            <div className="section-head reveal" style={{ marginBottom: 0 }}>
+              <p className="eyebrow">Nuestra colección</p>
+              <h2>El catálogo</h2>
+              <p>
+                Cada diseño nace de un versículo y se confecciona con telas que
+                duran. Elige el tuyo y pídelo directo por WhatsApp.
+              </p>
+            </div>
+          )}
 
           <div className="filters reveal" role="tablist" aria-label="Filtrar por categoría">
             {CATEGORIES.map((c) => (
