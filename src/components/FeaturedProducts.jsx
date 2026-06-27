@@ -27,7 +27,7 @@ export default function FeaturedProducts() {
                 <div key={i} className="card card--skeleton" />
               ))
             : featured.map((p) => (
-                <ProductCard key={p.id} product={p} onOpen={setActive} />
+                <ProductCard key={p.id} product={p} onOpen={setActive} eager />
               ))}
         </div>
 
