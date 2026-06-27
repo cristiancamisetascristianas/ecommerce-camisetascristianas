@@ -1,18 +1,20 @@
 import { useMemo, useState } from "react";
-import { PRODUCTS, CATEGORIES } from "../data/products";
+import { CATEGORIES } from "../data/products";
+import { useProducts } from "../context/ProductsContext";
 import ProductCard from "./ProductCard";
 import ProductModal from "./ProductModal";
 
 export default function Catalog({ hideHead = false }) {
   const [filter, setFilter] = useState("todos");
   const [active, setActive] = useState(null);
+  const { products, loading } = useProducts();
 
   const visible = useMemo(
     () =>
       filter === "todos"
-        ? PRODUCTS
-        : PRODUCTS.filter((p) => p.category === filter),
-    [filter]
+        ? products
+        : products.filter((p) => p.category === filter),
+    [filter, products]
   );
 
   return (
@@ -45,9 +47,13 @@ export default function Catalog({ hideHead = false }) {
         </div>
 
         <div className="grid">
-          {visible.map((p) => (
-            <ProductCard key={p.id} product={p} onOpen={setActive} />
-          ))}
+          {loading
+            ? Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="card card--skeleton" />
+              ))
+            : visible.map((p) => (
+                <ProductCard key={p.id} product={p} onOpen={setActive} />
+              ))}
         </div>
       </div>
 
