@@ -6,7 +6,7 @@ import ProductModal from "./ProductModal";
 
 export default function FeaturedProducts() {
   const [active, setActive] = useState(null);
-  const { products } = useProducts();
+  const { products, loading } = useProducts();
   const featured = products.filter((p) => p.badge).slice(0, 4);
 
   return (
@@ -22,9 +22,13 @@ export default function FeaturedProducts() {
         </div>
 
         <div className="grid">
-          {featured.map((p) => (
-            <ProductCard key={p.id} product={p} onOpen={setActive} />
-          ))}
+          {loading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="card card--skeleton" />
+              ))
+            : featured.map((p) => (
+                <ProductCard key={p.id} product={p} onOpen={setActive} />
+              ))}
         </div>
 
         <div className="featured__cta reveal">

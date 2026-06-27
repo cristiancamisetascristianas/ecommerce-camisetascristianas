@@ -12,10 +12,8 @@ function IgGlyph() {
 }
 
 export default function InstagramFeed() {
-  const { products } = useProducts();
+  const { products, loading } = useProducts();
   const instaImages = products.flatMap((p) => p.images).slice(0, 6);
-
-  if (instaImages.length === 0) return null;
 
   return (
     <section className="section" id="instagram" style={{ background: "var(--c-crema)" }}>
@@ -30,21 +28,25 @@ export default function InstagramFeed() {
         </div>
 
         <div className="ig__grid reveal">
-          {instaImages.map((src, i) => (
-            <a
-              key={i}
-              href={BRAND.instagram}
-              className="ig__item"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Ver publicación en Instagram ${BRAND.handle}`}
-            >
-              <img src={src} alt="Publicación de Instagram de En Tus Manos Estoy" loading="lazy" />
-              <span className="ig__icon">
-                <IgGlyph />
-              </span>
-            </a>
-          ))}
+          {loading
+            ? Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="ig__item ig__item--skeleton" />
+              ))
+            : instaImages.map((src, i) => (
+                <a
+                  key={i}
+                  href={BRAND.instagram}
+                  className="ig__item"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Ver publicación en Instagram ${BRAND.handle}`}
+                >
+                  <img src={src} alt="Publicación de Instagram de En Tus Manos Estoy" loading="lazy" />
+                  <span className="ig__icon">
+                    <IgGlyph />
+                  </span>
+                </a>
+              ))}
         </div>
 
         <div className="ig__cta reveal">

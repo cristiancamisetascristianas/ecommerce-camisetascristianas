@@ -92,14 +92,21 @@ export default function ScrollFrameHero() {
     sizeCanvas();
     update();
 
-    // Precarga progresiva: el primer frame dispara la desaparición del loader.
+    // Precarga: el loader se mantiene hasta que TODOS los frames estén listos.
+    let loadedCount = 0;
     FRAMES.forEach((src, i) => {
       const img = new Image();
       img.onload = () => {
         if (disposed) return;
         images[i] = img;
-        if (i === 0) setReady(true);
         draw(lastTarget);
+        loadedCount++;
+        if (loadedCount === FRAMES.length) setReady(true);
+      };
+      img.onerror = () => {
+        if (disposed) return;
+        loadedCount++;
+        if (loadedCount === FRAMES.length) setReady(true);
       };
       img.src = src;
     });
