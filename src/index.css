@@ -1337,6 +1337,26 @@ h4 {
     margin-top: 1rem;
     font-size: 0.62rem;
   }
+
+  /* Etapa 1: texto arriba a la derecha en mobile */
+  .fhero__layer--intro {
+    top: clamp(5rem, 12vh, 7.5rem);
+    bottom: auto;
+    text-align: right;
+    background: none;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .fhero__layer--intro > * {
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  .fhero__layer--intro .fhero__sub {
+    margin-left: auto;
+    margin-right: 0;
+  }
 }
 
 @media (max-width: 420px) {
@@ -1621,7 +1641,7 @@ body.no-scroll {
 }
 
 /* ============================================================
-   CARD SKELETON (mientras cargan productos)
+   SKELETONS (mientras cargan productos e imágenes)
    ============================================================ */
 .card--skeleton {
   background: var(--c-beige-claro);
@@ -1630,7 +1650,18 @@ body.no-scroll {
   animation: shimmer 1.6s ease-in-out infinite;
 }
 
+.ig__item--skeleton {
+  background: var(--c-beige-claro);
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.ig__item--skeleton:nth-child(2) { animation-delay: 0.15s; }
+.ig__item--skeleton:nth-child(3) { animation-delay: 0.30s; }
+.ig__item--skeleton:nth-child(4) { animation-delay: 0.45s; }
+.ig__item--skeleton:nth-child(5) { animation-delay: 0.60s; }
+.ig__item--skeleton:nth-child(6) { animation-delay: 0.75s; }
+
 @keyframes shimmer {
-  0%, 100% { opacity: 0.5; }
-  50%       { opacity: 1; }
+  0%, 100% { opacity: 0.45; }
+  50%       { opacity: 0.9; }
 }
