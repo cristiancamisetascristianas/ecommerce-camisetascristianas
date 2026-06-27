@@ -1271,24 +1271,81 @@ h4 {
 }
 
 @media (max-width: 720px) {
+  /* Reducir la altura total del scroll en móvil */
+  .fhero {
+    height: 480vh;
+  }
+
+  /* Las capas van al tercio inferior, centradas */
   .fhero__layer--right,
   .fhero__layer--left,
   .fhero__layer--top {
     top: auto;
-    bottom: clamp(3rem, 12vh, 6rem);
+    bottom: 0;
     transform: none;
     text-align: center;
+    padding-bottom: clamp(2.5rem, 10vh, 5rem);
+    /* Gradiente debajo del texto para legibilidad */
+    background: linear-gradient(
+      to top,
+      rgba(217, 217, 217, 0.92) 0%,
+      rgba(217, 217, 217, 0.7) 60%,
+      transparent 100%
+    );
+    padding-top: 3rem;
   }
+
+  .fhero__layer h1,
+  .fhero__layer h2 {
+    font-size: clamp(1.9rem, 8vw, 2.8rem);
+    margin: 0.3rem 0 0.7rem;
+  }
+
+  .fhero__sub {
+    font-size: clamp(0.9rem, 3.8vw, 1.1rem);
+    max-width: 28ch;
+  }
+
+  /* Centrar todos los hijos */
   .fhero__layer--right > *,
+  .fhero__layer--left > *,
   .fhero__layer--right .fhero__sub,
   .fhero__layer--left .fhero__sub {
     margin-inline: auto;
   }
+
+  /* Botones en columna en pantallas muy pequeñas */
+  .fhero__cta {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.2rem;
+  }
+
+  .fhero__cta .btn {
+    width: min(260px, 100%);
+    justify-content: center;
+  }
+
   .fhero__layer--right .fhero__cta,
   .fhero__layer--left .fhero__cta {
     justify-content: center;
   }
+
+  /* Hint "Desliza" */
+  .fhero__hint {
+    margin-top: 1rem;
+    font-size: 0.62rem;
+  }
 }
+
+@media (max-width: 420px) {
+  .fhero__layer h1,
+  .fhero__layer h2 {
+    font-size: clamp(1.6rem, 9vw, 2.2rem);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .fhero {
     height: 100vh;
@@ -1496,4 +1553,84 @@ h4 {
 /* Util: bloquear scroll cuando modal/menu abierto */
 body.no-scroll {
   overflow: hidden;
+}
+
+/* ============================================================
+   LOADER DE PÁGINA (carga inicial de frames)
+   ============================================================ */
+.page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--c-tinta);
+  display: grid;
+  place-items: center;
+  opacity: 1;
+  transition: opacity 0.75s var(--ease);
+  pointer-events: all;
+}
+
+.page-loader--done {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.page-loader__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.2rem;
+  animation: loaderIn 0.6s var(--ease) both;
+}
+
+@keyframes loaderIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.page-loader__brand {
+  font-family: var(--f-serif);
+  font-size: clamp(1.6rem, 5vw, 2.6rem);
+  font-weight: 600;
+  color: var(--c-crema);
+  letter-spacing: 0.02em;
+  text-align: center;
+  line-height: 1.1;
+}
+
+.page-loader__dots {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.page-loader__dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--c-cafe);
+  animation: dotBounce 1.2s var(--ease) infinite;
+}
+
+.page-loader__dots span:nth-child(2) { animation-delay: 0.18s; }
+.page-loader__dots span:nth-child(3) { animation-delay: 0.36s; }
+
+@keyframes dotBounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40%           { transform: scale(1);   opacity: 1; }
+}
+
+/* ============================================================
+   CARD SKELETON (mientras cargan productos)
+   ============================================================ */
+.card--skeleton {
+  background: var(--c-beige-claro);
+  border-radius: var(--radio);
+  aspect-ratio: 4 / 6;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1; }
 }
