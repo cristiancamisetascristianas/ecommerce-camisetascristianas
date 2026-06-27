@@ -31,6 +31,8 @@ export default function ScrollFrameHero() {
   const [reduced] = useState(
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches
   );
+  const [ready, setReady] = useState(false);
+  const [loaderVisible, setLoaderVisible] = useState(true);
 
   useEffect(() => {
     if (reduced) return;
@@ -90,12 +92,13 @@ export default function ScrollFrameHero() {
     sizeCanvas();
     update();
 
-    // Precarga progresiva: cada frame redibuja al llegar si mejora el actual.
+    // Precarga progresiva: el primer frame dispara la desaparición del loader.
     FRAMES.forEach((src, i) => {
       const img = new Image();
       img.onload = () => {
         if (disposed) return;
         images[i] = img;
+        if (i === 0) setReady(true);
         draw(lastTarget);
       };
       img.src = src;
@@ -123,6 +126,13 @@ export default function ScrollFrameHero() {
       window.removeEventListener("resize", onResize);
     };
   }, [reduced]);
+
+  // Cuando el primer frame está listo, inicia el fade-out del loader
+  useEffect(() => {
+    if (!ready) return;
+    const t = setTimeout(() => setLoaderVisible(false), 850);
+    return () => clearTimeout(t);
+  }, [ready]);
 
   // Sin animación (prefers-reduced-motion): un solo frame estático con todo el contenido.
   if (reduced) {
@@ -156,7 +166,18 @@ export default function ScrollFrameHero() {
   }
 
   return (
-    <section className="fhero" id="top" ref={heroRef}>
+    <>
+      {loaderVisible && (
+        <div className={`page-loader${ready ? " page-loader--done" : ""}`} aria-hidden="true">
+          <div className="page-loader__inner">
+            <p className="page-loader__brand">En Tus Manos Estoy</p>
+            <div className="page-loader__dots">
+              <span /><span /><span />
+            </div>
+          </div>
+        </div>
+      )}
+      <section className="fhero" id="top" ref={heroRef}>
       <div className="fhero__sticky">
         <canvas ref={canvasRef} className="fhero__canvas" aria-hidden="true" />
 
@@ -205,6 +226,7 @@ export default function ScrollFrameHero() {
           <div ref={fillRef} />
         </div>
       </div>
-    </section>
+      </section>
+    </>
   );
 }
