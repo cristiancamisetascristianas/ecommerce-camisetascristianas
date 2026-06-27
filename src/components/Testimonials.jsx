@@ -44,7 +44,7 @@ export default function Testimonials() {
           <h2>Historias que nos inspiran</h2>
         </div>
 
-        <div className="testi__viewport reveal">
+        <div className="testi__viewport">
           <div
             className="testi__track"
             style={{ transform: `translateX(-${i * 100}%)` }}
