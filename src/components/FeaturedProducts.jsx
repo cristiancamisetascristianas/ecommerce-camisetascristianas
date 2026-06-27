@@ -1,14 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { PRODUCTS } from "../data/products";
+import { useProducts } from "../context/ProductsContext";
 import ProductCard from "./ProductCard";
 import ProductModal from "./ProductModal";
 
-// Muestra los productos con "badge" (los destacados) como anticipo del catálogo.
-const FEATURED = PRODUCTS.filter((p) => p.badge).slice(0, 4);
-
 export default function FeaturedProducts() {
   const [active, setActive] = useState(null);
+  const { products } = useProducts();
+  const featured = products.filter((p) => p.badge).slice(0, 4);
 
   return (
     <section className="section section--bg featured">
@@ -23,7 +22,7 @@ export default function FeaturedProducts() {
         </div>
 
         <div className="grid">
-          {FEATURED.map((p) => (
+          {featured.map((p) => (
             <ProductCard key={p.id} product={p} onOpen={setActive} />
           ))}
         </div>

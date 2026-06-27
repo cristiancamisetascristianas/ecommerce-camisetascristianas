@@ -1,5 +1,5 @@
 import { BRAND } from "../data/site";
-import { INSTA_IMAGES } from "../data/products";
+import { useProducts } from "../context/ProductsContext";
 
 function IgGlyph() {
   return (
@@ -12,6 +12,11 @@ function IgGlyph() {
 }
 
 export default function InstagramFeed() {
+  const { products } = useProducts();
+  const instaImages = products.flatMap((p) => p.images).slice(0, 6);
+
+  if (instaImages.length === 0) return null;
+
   return (
     <section className="section" id="instagram" style={{ background: "var(--c-crema)" }}>
       <div className="container">
@@ -25,7 +30,7 @@ export default function InstagramFeed() {
         </div>
 
         <div className="ig__grid reveal">
-          {INSTA_IMAGES.map((src, i) => (
+          {instaImages.map((src, i) => (
             <a
               key={i}
               href={BRAND.instagram}
