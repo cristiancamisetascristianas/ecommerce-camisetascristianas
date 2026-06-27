@@ -9,6 +9,11 @@ export async function checkAppVersion() {
     const { version } = await res.json()
     const stored = localStorage.getItem(STORAGE_KEY)
 
+    console.log(`%c En Tus Manos Estoy %c v${version} `,
+      'background:#1f1a16;color:#faf7f2;padding:2px 0;border-radius:3px 0 0 3px;font-weight:600',
+      'background:#6f5440;color:#faf7f2;padding:2px 6px;border-radius:0 3px 3px 0;font-weight:600'
+    )
+
     // Primera visita: guarda la versión y sigue
     if (stored === null) {
       localStorage.setItem(STORAGE_KEY, version)
@@ -17,6 +22,7 @@ export async function checkAppVersion() {
 
     // Versión diferente → actualiza y recarga para coger el build nuevo
     if (stored !== version) {
+      console.log(`[Version] Actualización detectada: ${stored} → ${version}. Recargando...`)
       localStorage.setItem(STORAGE_KEY, version)
       window.location.reload(true)
       // Detiene la ejecución mientras se recarga la página
