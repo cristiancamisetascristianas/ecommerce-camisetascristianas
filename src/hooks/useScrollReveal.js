@@ -1,14 +1,11 @@
 import { useEffect } from "react";
 
-// Añade la clase .is-visible a los elementos .reveal cuando entran en viewport.
-// Un único IntersectionObserver para toda la página (eficiente).
 export function useScrollReveal() {
   useEffect(() => {
-    const els = document.querySelectorAll(".reveal:not(.is-visible)");
-    if (!els.length) return;
-
     if (!("IntersectionObserver" in window)) {
-      els.forEach((el) => el.classList.add("is-visible"));
+      document.querySelectorAll(".reveal").forEach((el) =>
+        el.classList.add("is-visible")
+      );
       return;
     }
 
@@ -21,10 +18,25 @@ export function useScrollReveal() {
           }
         });
       },
-      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+      { threshold: 0.08, rootMargin: "0px 0px -4% 0px" }
     );
 
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
+    const observeNew = () => {
+      document.querySelectorAll(".reveal:not(.is-visible)").forEach((el) =>
+        io.observe(el)
+      );
+    };
+
+    // Observa elementos actuales
+    observeNew();
+
+    // Observa elementos que se agreguen dinámicamente al DOM (ej: cards de Supabase)
+    const mo = new MutationObserver(observeNew);
+    mo.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      io.disconnect();
+      mo.disconnect();
+    };
   }, []);
 }
