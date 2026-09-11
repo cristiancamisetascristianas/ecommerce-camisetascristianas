@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
 import { BRAND } from "../data/site";
+import { useCart } from "../context/CartContext";
 
 const LINKS = [
   { to: "/catalogo", label: "Catálogo" },
@@ -13,6 +14,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
   const isHome = pathname === "/";
+  const { count, openCart } = useCart();
 
   useEffect(() => {
     // En el inicio: transparente sobre la animación, con fondo al pasarla.
@@ -60,6 +62,19 @@ export default function Navbar() {
             </NavLink>
           ))}
         </nav>
+
+        <button
+          className="nav__cart"
+          aria-label={`Ver carrito${count > 0 ? ` (${count} productos)` : ""}`}
+          onClick={openCart}
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+            <circle cx="9" cy="21" r="1.2" fill="currentColor" stroke="none" />
+            <circle cx="19" cy="21" r="1.2" fill="currentColor" stroke="none" />
+            <path d="M1.5 2h2.4l2.2 12.4a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 2-1.6L21 6.5H5.1" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          {count > 0 && <span className="nav__cart-badge">{count}</span>}
+        </button>
 
         <button
           className={`nav__toggle ${open ? "is-open" : ""}`}
