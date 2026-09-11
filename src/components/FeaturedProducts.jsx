@@ -1,16 +1,25 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useProducts } from "../context/ProductsContext";
 import ProductCard from "./ProductCard";
 import ProductModal from "./ProductModal";
 
+const CUPO = 6; // dos filas completas en la grilla
+
 export default function FeaturedProducts() {
   const [active, setActive] = useState(null);
   const { products, loading } = useProducts();
-  const featured = products.filter((p) => p.badge).slice(0, 4);
+
+  // Se marcan desde la base con `featured`. Si no hay suficientes marcados se
+  // completa con el resto del catálogo, para que la portada nunca quede coja.
+  const featured = useMemo(() => {
+    const marcados = products.filter((p) => p.featured);
+    const relleno = products.filter((p) => !p.featured);
+    return [...marcados, ...relleno].slice(0, CUPO);
+  }, [products]);
 
   return (
-    <section className="section section--bg featured">
+    <section className="section section--bg featured" id="destacados">
       <div className="container">
         <div className="section-head center reveal">
           <p className="eyebrow">Lo más querido</p>
@@ -23,7 +32,7 @@ export default function FeaturedProducts() {
 
         <div className="grid">
           {loading
-            ? Array.from({ length: 4 }).map((_, i) => (
+            ? Array.from({ length: CUPO }).map((_, i) => (
                 <div key={i} className="card card--skeleton" />
               ))
             : featured.map((p) => (
@@ -38,7 +47,13 @@ export default function FeaturedProducts() {
         </div>
       </div>
 
-      {active && <ProductModal product={active} onClose={() => setActive(null)} />}
+      {active && (
+        <ProductModal
+          key={active.id}
+          product={active}
+          onClose={() => setActive(null)}
+        />
+      )}
     </section>
   );
 }
