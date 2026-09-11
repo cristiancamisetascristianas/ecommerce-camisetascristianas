@@ -9,14 +9,21 @@ export function ProductsProvider({ children }) {
   const [error, setError] = useState(null)
 
   useEffect(() => {
+    console.log('[Products] Iniciando fetch a Supabase...')
+
     supabase
-      .from('products')
+      .from('products_public')
       .select('*')
       .eq('active', true)
-      .order('created_at')
+      .order('sort_order').order('created_at')
       .then(({ data, error }) => {
-        if (error) setError(error.message)
-        else setProducts(data ?? [])
+        if (error) {
+          console.error('[Products] Error:', error.message)
+          setError(error.message)
+        } else {
+          console.log(`[Products] ${data?.length ?? 0} productos recibidos:`, data?.map(p => p.id))
+          setProducts(data ?? [])
+        }
         setLoading(false)
       })
   }, [])
