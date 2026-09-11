@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { cop, waLink } from "../data/site";
 import { supabase } from "../lib/supabase";
+import { useCart } from "../context/CartContext";
 
 // Los gramajes se guardan como número, y NULL cuando la prenda no lo distingue
 // (busos y cami busos, pendientes de definir). Se necesita una clave estable.
@@ -15,6 +16,9 @@ export default function ProductModal({ product, onClose }) {
   const [gramaje, setGramaje] = useState(undefined);
   const [color, setColor] = useState(null);
   const [talla, setTalla] = useState(null);
+  const [cantidad, setCantidad] = useState(1);
+
+  const { addItem } = useCart();
 
   // Bloquear scroll de fondo + cerrar con Escape
   useEffect(() => {
@@ -130,6 +134,33 @@ export default function ProductModal({ product, onClose }) {
   const colorActual = colores.find((c) => c.code === colorSel);
 
   const listo = Boolean(tallaSel && (colores.length === 0 || colorSel));
+
+  // La variante exacta que se agrega al carrito: la misma combinación que ya
+  // se usa para calcular el precio, pero con el `id` real de product_variants.
+  const varianteSel = delGramaje.find(
+    (v) =>
+      v.size_code === tallaSel &&
+      (colores.length === 0 || v.color_code === colorSel)
+  );
+
+  function handleAgregarCarrito() {
+    if (!listo || !varianteSel) return;
+    addItem(
+      {
+        variantId: varianteSel.id,
+        productSlug: product.slug,
+        productName: product.name,
+        image: imagenes[0] ?? null,
+        weight: gramajeActual?.grams ?? null,
+        weightLabel: gramajeActual?.label ?? null,
+        size: tallaSel,
+        color: colorActual?.name ?? null,
+        unitPrice: precioTalla ?? precioMin,
+      },
+      cantidad
+    );
+    setCantidad(1);
+  }
 
   const mensaje = [
     `Hola, me interesa ${product.name}`,
@@ -277,9 +308,42 @@ export default function ProductModal({ product, onClose }) {
             {!listo && !cargando && (
               <p className="modal__nota modal__nota--buy">
                 Elige {colores.length > 0 && !colorSel ? "color y " : ""}talla para
-                pedir con todos los datos.
+                agregar al carrito.
               </p>
             )}
+
+            {listo && (
+              <div className="qty-row">
+                <span>Cantidad</span>
+                <div className="qty-control">
+                  <button
+                    type="button"
+                    onClick={() => setCantidad((n) => Math.max(1, n - 1))}
+                    aria-label="Restar cantidad"
+                  >
+                    −
+                  </button>
+                  <span>{cantidad}</span>
+                  <button
+                    type="button"
+                    onClick={() => setCantidad((n) => Math.min(20, n + 1))}
+                    aria-label="Sumar cantidad"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <button
+              type="button"
+              className="btn btn--solid btn--block"
+              disabled={!listo || !varianteSel}
+              onClick={handleAgregarCarrito}
+            >
+              Agregar al carrito
+            </button>
+
             <a
               href={waLink(mensaje)}
               className="btn btn--wa btn--block"
