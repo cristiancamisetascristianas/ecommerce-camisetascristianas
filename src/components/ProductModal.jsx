@@ -154,7 +154,16 @@ export default function ProductModal({ product, onClose }) {
 
         <div className="modal__gallery">
           <div className="modal__main">
-            {imagenes[img] && <img src={imagenes[img]} alt={product.name} />}
+            {imagenes[img] && (
+              <>
+                <div
+                  className="modal__fondo"
+                  style={{ backgroundImage: `url(${imagenes[img]})` }}
+                  aria-hidden="true"
+                />
+                <img src={imagenes[img]} alt={product.name} />
+              </>
+            )}
           </div>
           {imagenes.length > 1 && (
             <div className="modal__thumbs">

@@ -661,14 +661,35 @@ h4 {
 }
 .modal__gallery {
   background: var(--c-beige-claro);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
+/* La imagen ocupa todo el alto de su columna: sin aspect-ratio fijo no queda
+   hueco debajo cuando la ficha del producto es más alta que la foto. */
 .modal__main {
-  aspect-ratio: 4 / 5;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+}
+/* Las fotos vienen en orientaciones distintas y recortarlas perderia el
+   estampado, que es el producto. El sobrante se rellena con la misma imagen
+   desenfocada: la foto se ve completa y no queda hueco debajo. */
+.modal__fondo {
+  position: absolute;
+  inset: -30px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(30px) saturate(1.15) brightness(0.9);
 }
 .modal__main img {
+  position: relative;
+  z-index: 1;
+  display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 .modal__thumbs {
   display: flex;
@@ -774,6 +795,13 @@ h4 {
 @media (max-width: 760px) {
   .modal__panel {
     grid-template-columns: 1fr;
+  }
+  /* Apilado: la foto recupera una proporción propia */
+  .modal__main {
+    position: static;
+    flex: none;
+    aspect-ratio: 4 / 5;
+    max-height: none;
   }
 }
 
