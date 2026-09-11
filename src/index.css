@@ -1665,3 +1665,103 @@ body.no-scroll {
   0%, 100% { opacity: 0.45; }
   50%       { opacity: 0.9; }
 }
+
+/* ============================================================
+   CATÁLOGO DINÁMICO · colores, gramaje y precios por variante
+   ============================================================ */
+
+/* Aviso de error o categoría vacía */
+.catalog__aviso {
+  text-align: center;
+  color: var(--c-gris);
+  padding: 2.5rem 1rem;
+}
+
+/* "desde" delante del precio cuando el producto tiene rango */
+.card__desde,
+.modal__desde {
+  font-style: normal;
+  font-size: 0.62em;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-gris);
+  margin-right: 0.4em;
+}
+
+/* Placeholder cuando un producto aún no tiene foto */
+.card__media--vacio {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--c-beige-claro), var(--c-arena));
+}
+
+/* Muestrario de colores en la tarjeta */
+.card__colores {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.55rem;
+  list-style: none;
+  padding: 0;
+}
+.card__colores li {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 1px solid rgba(31, 26, 22, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+.card__colores-mas {
+  border: 0 !important;
+  box-shadow: none !important;
+  width: auto !important;
+  font-size: 0.66rem;
+  color: var(--c-gris);
+  margin-left: 0.15rem;
+}
+
+/* Selector de color del modal */
+.color-row {
+  display: flex;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+.color-dot {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--dot);
+  border: 1px solid rgba(31, 26, 22, 0.22);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+.color-dot:hover {
+  transform: scale(1.08);
+}
+.color-dot.is-active {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.45),
+    0 0 0 2px var(--c-crema),
+    0 0 0 4px var(--c-tinta);
+}
+
+/* Notas: aviso de Oversize y de selección pendiente */
+.modal__nota {
+  font-size: 0.76rem;
+  color: var(--c-cafe);
+  margin-top: 0.55rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.modal__nota--buy {
+  color: var(--c-gris);
+  margin-bottom: 0.6rem;
+}
+.modal__cargando {
+  font-size: 0.85rem;
+  color: var(--c-gris);
+  margin-bottom: 1.4rem;
+}

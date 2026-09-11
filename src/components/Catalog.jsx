@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { CATEGORIES } from "../data/products";
+import { buildCategories } from "../data/products";
 import { useProducts } from "../context/ProductsContext";
 import ProductCard from "./ProductCard";
 import ProductModal from "./ProductModal";
@@ -7,7 +7,10 @@ import ProductModal from "./ProductModal";
 export default function Catalog({ hideHead = false }) {
   const [filter, setFilter] = useState("todos");
   const [active, setActive] = useState(null);
-  const { products, loading } = useProducts();
+  const { products, loading, error } = useProducts();
+
+  // Los filtros salen de los productos que realmente llegaron de la base
+  const categories = useMemo(() => buildCategories(products), [products]);
 
   const visible = useMemo(
     () =>
@@ -33,7 +36,7 @@ export default function Catalog({ hideHead = false }) {
           )}
 
           <div className="filters reveal" role="tablist" aria-label="Filtrar por categoría">
-            {CATEGORIES.map((c) => (
+            {categories.map((c) => (
               <button
                 key={c.id}
                 className={`filters__btn ${filter === c.id ? "is-active" : ""}`}
@@ -46,19 +49,41 @@ export default function Catalog({ hideHead = false }) {
           </div>
         </div>
 
+        {error && !loading && (
+          <p className="catalog__aviso">
+            No pudimos cargar el catálogo en este momento. Escríbenos por
+            WhatsApp y te mostramos todos los diseños.
+          </p>
+        )}
+
         <div className="grid">
           {loading
             ? Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="card card--skeleton" />
               ))
-            : visible.map((p) => (
-                <ProductCard key={p.id} product={p} onOpen={setActive} />
+            : visible.map((p, i) => (
+                <ProductCard
+                  key={p.id}
+                  product={p}
+                  onOpen={setActive}
+                  eager={i < 3}
+                />
               ))}
         </div>
+
+        {!loading && !error && visible.length === 0 && (
+          <p className="catalog__aviso">
+            Pronto tendremos diseños en esta categoría.
+          </p>
+        )}
       </div>
 
       {active && (
-        <ProductModal product={active} onClose={() => setActive(null)} />
+        <ProductModal
+          key={active.id}
+          product={active}
+          onClose={() => setActive(null)}
+        />
       )}
     </section>
   );
