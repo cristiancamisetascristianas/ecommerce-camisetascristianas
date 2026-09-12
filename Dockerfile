@@ -1,35 +1,33 @@
 # syntax=docker/dockerfile:1
 
-# [0393] — containerizes the frontend so it runs identically on any
-# machine. No native dependencies here (checked package.json), so a single
-# builder stage is enough; the runtime stage only needs the standalone
-# output next.config.ts now produces (output: "standalone"), not the full
-# node_modules tree.
-FROM node:24-bookworm-slim AS builder
+# Stage 1: Build
+FROM node:22-alpine AS builder
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-RUN npm ci
+# Copy package files (wildcard ensures it works even if package-lock.json is missing in context)
+COPY package.json package-lock.json* ./
+RUN npm install
 
+# Copy source code and build
 COPY . .
-
-# [0393] — NEXT_PUBLIC_* vars are inlined into the browser bundle at build
-# time, not read at container start, so this has to be a build arg (see
-# docker-compose.yml) rather than a runtime environment variable.
-ARG NEXT_PUBLIC_API_URL='https://api.edentenant.com'
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-
 RUN npm run build
 
-FROM node:24-bookworm-slim AS runtime
-WORKDIR /app
-ENV NODE_ENV=production
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
+# Stage 2: Serve with Nginx
+FROM nginx:alpine AS runtime
 
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
+# Copy built assets from builder stage
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-EXPOSE 3000
-CMD ["node", "server.js"]
+# Configure Nginx for React Router (fallback to index.html)
+RUN echo 'server { \
+    listen 80; \
+    server_name localhost; \
+    location / { \
+        root /usr/share/nginx/html; \
+        index index.html index.htm; \
+        try_files $uri $uri/ /index.html; \
+    } \
+}' > /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
